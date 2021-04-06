@@ -9,7 +9,6 @@ const userRoutes = require("./api/routes/user");
 const authRouters = require("./api/routes/auth");
 const profileRouters = require("./api/routes/profile");
 const categoryRouters = require("./api/routes/categories");
-const { static } = require("express");
 
 app.use(morgan("dev"));
 app.use("/uploads", express.static("uploads"));

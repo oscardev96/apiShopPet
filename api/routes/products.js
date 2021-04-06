@@ -23,8 +23,8 @@ const upload = multer({ storage: storage });
 router.get("/:page", async (req, res, next) => {
   try {
     let products = await Product.find({}, { comments: 0 })
-      .limit(10)
-      .skip(10 * req.params.page)
+      .limit(4)
+      .skip(4 * req.params.page)
       .populate("category", ["name", "_id"]);
 
     res.status(200).json(products);
@@ -74,6 +74,7 @@ router.post(
       name: req.body.name,
       category: req.body.category,
       price: req.body.price,
+      overView: req.body.overView,
       description: req.body.description,
       images,
     });
@@ -134,12 +135,12 @@ router.delete("/:id", checkAuth, checkAdmin, async (req, res, next) => {
 });
 
 /// COMENT
-router.post("/comment", checkAuth, async (req, res) => {
+router.post("/comment/:id", checkAuth, async (req, res) => {
   try {
-    const product = await Product.findById(req.body.id);
-    const user = await User.findById(req.user.id);
+    const product = await Product.findById(req.params.id);
+
     const newComment = {
-      user: uer.name,
+      user: req.user.id,
       text: req.body.text,
       rating: req.body.rating,
     };
@@ -150,6 +151,22 @@ router.post("/comment", checkAuth, async (req, res) => {
     res.status(500).json({
       message: "  FAIL",
     });
+  }
+});
+
+// SEARCH
+router.get("/search/:query", async (req, res, next) => {
+  try {
+    let query = req.params.query;
+    let result = await Product.find(
+      {
+        name: new RegExp(query, "i"),
+      },
+      { comments: 0, description: 0, price: 0, overView: 0, category: 0 }
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(err);
   }
 });
 module.exports = router;

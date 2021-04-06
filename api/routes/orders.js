@@ -6,7 +6,13 @@ const checkAuth = require("../middleware/checkAuth");
 /// GET LIST ORDER USER
 router.get("/", checkAuth, async (req, res, next) => {
   try {
-    let listOrder = await Order.find({ user: req.user.id });
+    let listOrder = await Order.find({ user: req.user.id }).populate({
+      path: "listProduct",
+      populate: {
+        path: "product",
+        select: ["name", "price", "images"],
+      },
+    });
     res.status(200).json(listOrder);
   } catch (error) {
     res.status(500).json({
@@ -16,12 +22,13 @@ router.get("/", checkAuth, async (req, res, next) => {
 });
 /// POST ORDER
 router.post("/", checkAuth, async (req, res, next) => {
-  console.log(req.body.listProduct);
   try {
     let order = new Order({
       _id: new mongoose.Types.ObjectId(),
       user: req.user.id,
       listProduct: req.body.listProduct,
+      totalItem: req.body.totalItem,
+      totalAmount: req.body.totalAmount,
     });
     await order.save();
     res.status(200).json(order);
