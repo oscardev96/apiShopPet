@@ -9,7 +9,7 @@ const userRoutes = require("./api/routes/user");
 const authRouters = require("./api/routes/auth");
 const profileRouters = require("./api/routes/profile");
 const categoryRouters = require("./api/routes/categories");
-
+const chatRouters = require("./api/routes/chats");
 app.use(morgan("dev"));
 app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,6 +42,7 @@ app.use("/user", userRoutes);
 app.use("/auth", authRouters);
 app.use("/profile", profileRouters);
 app.use("/category", categoryRouters);
+app.use("/chat", chatRouters);
 app.use((req, res, next) => {
   let error = new Error("Not Found");
   error.status = 404;

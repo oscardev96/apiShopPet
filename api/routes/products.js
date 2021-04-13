@@ -23,8 +23,8 @@ const upload = multer({ storage: storage });
 router.get("/:page", async (req, res, next) => {
   try {
     let products = await Product.find({}, { comments: 0 })
-      .limit(4)
-      .skip(4 * req.params.page)
+      .limit(10)
+      .skip(10 * req.params.page)
       .populate("category", ["name", "_id"]);
 
     res.status(200).json(products);
@@ -166,7 +166,7 @@ router.get("/search/:query", async (req, res, next) => {
     );
     res.status(200).json(result);
   } catch (error) {
-    console.log(err);
+    console.log(error);
   }
 });
 module.exports = router;
